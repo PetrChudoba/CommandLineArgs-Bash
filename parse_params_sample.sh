@@ -21,7 +21,6 @@ while [[ $# > 0 ]]; do
                 positional[$index]=$param
                 ((index++))            
             done
-            echo "Konec foru"
             break
     fi
     
