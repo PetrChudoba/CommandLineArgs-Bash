@@ -38,7 +38,7 @@ while [[ $# > 0 ]]; do
                     break
                     ;;
                     
-            # ======= Switches             
+            # ======= Switches =======           
             -f* )
                     force=true
                     param="-${param:2}"

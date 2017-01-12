@@ -28,8 +28,8 @@ while [[ $# > 0 ]]; do
     # Parse current parameter
     while [ x"$param" != x"-" ] ; do
             case "$param" in
-                    # Named parameters
-                    
+                    # ======= Named parameters =======
+			
                     # Config
                     -c=* | --config=* )
                             config_file="${param#*=}"
@@ -51,7 +51,7 @@ while [[ $# > 0 ]]; do
                             break
                             ;;
                     
-                    #  Switches
+                    # ======= Switches ======= 
                     
                     # Force
                     -f* )
@@ -73,7 +73,7 @@ while [[ $# > 0 ]]; do
                             break;
                             ;;
                     
-                    # Anything else is positional parameter
+                    # ======= Positional parameters =======
                     * )
                             positional[$index]=$param
                             ((index++))
