@@ -2,6 +2,14 @@
 
 . parse_params_sample.sh
 
+
+testCount=0;
+testPassed=0;
+testFailed=0;
+
+
+
+
 function startTest()
 {
  
@@ -11,6 +19,8 @@ function startTest()
  force=""
  verbose=""
  
+
+ ((testCount++)) 
  inputCommand="parseParams $@"
   
 
@@ -93,12 +103,14 @@ function assertEquals()
     
 
     if [ -z "$error" ]; then
+	((testPassed++)) 
         echo "PASSED: $inputCommand"
 	
 
 
 
     else
+	((testFailed++)) 
         echo "FAILED: $inputCommand"
     	echo -e "\t $configMsg"
 	echo -e "\t $outputMsg"
@@ -109,6 +121,9 @@ function assertEquals()
 
     
 }
+
+
+
 
 # Named parameters tests
 
@@ -199,3 +214,12 @@ assertEquals "config.conf" "" "true" "" first second
 
 startTest first second -vfc config.conf -o=output.txt third
 assertEquals "config.conf" "output.txt" "true" "true" first second third
+
+
+echo 
+echo "------------------------"
+echo 
+echo "Number of tests: $testCount, Passed: $testPassed , Failed: $testFailed"
+
+
+
