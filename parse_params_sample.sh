@@ -17,8 +17,6 @@ while [[ $# > 0 ]]; do
             echo "$param"
             # Put all to positional parameters array
             for param ; do
-                echo "$index"
-                echo "$param"
                 positional[$index]=$param
                 ((index++))            
             done
