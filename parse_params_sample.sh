@@ -14,7 +14,6 @@ while [[ $# > 0 ]]; do
     # If named parameters termination
     if [ x"$param" = x"--" ]; then
             shift
-            echo "$param"
             # Put all to positional parameters array
             for param ; do
                 positional[$index]=$param
