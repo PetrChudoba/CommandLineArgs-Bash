@@ -19,6 +19,7 @@ function startTest()
  force=""
  verbose=""
 
+ error=""
  
  
 
@@ -130,7 +131,7 @@ function assertEquals()
 # Named parameters tests
 
 
-startTest -c config.confd
+startTest -c config.conf
 assertEquals config.conf "" "" ""
 
 
