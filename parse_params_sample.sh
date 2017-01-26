@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Template for parsing command line parameters using only straight bash without getopt[s].
 
+function parseParams()
+{
 
 # The positional parameters are zero based
 index=0;
@@ -87,15 +88,6 @@ while [[ $# > 0 ]]; do
     shift
 done
 
+}
 
 
-echo "Named parameters:"
-echo "configfile=$config_file"
-echo "outputfile=$output_file"
-echo "force=$force"
-echo "verbose=$verbose"
-
-echo "Positional parameters:"
-for i in "${positional[@]}"; do 
-    echo "$i" 
-done
