@@ -7,28 +7,31 @@ testCount=0;
 testPassed=0;
 testFailed=0;
 
-
-
-
-function startTest()
+function arrangeTest
 {
- 
- #clear values
- config_file=""
- output_file=""
- force=""
- verbose=""
+    testDescription="$1"
 
- error=""
- configMsg=""
- outputMsg=""
- forceMsg=""
- verboseMsg=""
 
+    #clear values
+    config_file=""
+    output_file=""
+    force=""
+    verbose=""
+
+    error=""
+    configMsg=""
+    outputMsg=""
+    forceMsg=""
+    verboseMsg=""
+}
+
+
+function actTest()
+{
 
  ((testCount++)) 
- inputCommand="parseParams $@"
-  
+
+ testCase="parseParams $@"
 
  parseParams "$@"
 
@@ -110,14 +113,14 @@ function assertEquals()
 
     if [ -z "$error" ]; then
 	((testPassed++)) 
-        echo -e "\e[32mPASSED:\e[39m $inputCommand"
+        echo -e "\e[32mPASSED:\e[39m $testCase"
 	
 
 
 
     else
 	((testFailed++)) 
-        echo -e "\e[31mFAILED:\e[39m $inputCommand"
+        echo -e "\e[31mFAILED:\e[39m $testCase"
     	echo -e "\t $configMsg"
 	echo -e "\t $outputMsg"
 	echo -e "\t $forceMsg"
@@ -128,115 +131,138 @@ function assertEquals()
     
 }
 
-function reportResults()
+
+function runTests()
 {
-    echo 
-    echo "------------------------"
-    echo 
-
-    if [ "$testCount" == "$testPassed"]; then
-        echo "\e[32mAll $testCount tests passed."
-    else
-        echo "\e[31mSome tests failed" 
-        echo -e "\t Passed: $testPassed , Failed: $testFailed"
-
-    fi
-    
-}
-
 
 # Named parameters tests
 
-
-startTest -c config.conf
+arrangeTest "Simple test with one named parameter in short form"
+actTest -c config.conf
 assertEquals config.conf "" "" ""
 
-
-startTest --config config.conf
+arrangeTest
+actTest --config config.conf
 assertEquals config.conf
 
 
-startTest -c=config.conf
+arrangeTest
+actTest -c=config.conf
 assertEquals config.conf "" "" ""
 
 
-startTest --config=config.conf
+arrangeTest
+actTest --config=config.conf
 assertEquals config.conf
 
 
-startTest -c config.conf --output=output.txt
+arrangeTest
+actTest -c config.conf --output=output.txt
 assertEquals config.conf output.txt
 
 
 
 # Switches test
 
-startTest -f
+arrangeTest
+actTest -f
 assertEquals "" "" "true" ""
 
 
-startTest -v
+arrangeTest
+actTest -v
 assertEquals "" "" "" "true"
 
 
-startTest --force
+arrangeTest
+actTest --force
 assertEquals "" "" "true" ""
 
 
-startTest --verbose
+arrangeTest
+actTest --verbose
 assertEquals "" "" "" "true"
 
 
-startTest -f -v
+arrangeTest
+actTest -f -v
 assertEquals "" "" "true" "true"
 
 
 
-startTest --force --verbose
+arrangeTest
+actTest --force --verbose
 assertEquals "" "" "true" "true"
 
 
-startTest --force --verbose
+arrangeTest
+actTest --force --verbose
 assertEquals "" "" "true" "true"
 
 
-startTest -vf
+arrangeTest
+actTest -vf
 assertEquals "" "" "true" "true"
 
 # Positional params 
 
-
-startTest first
+arrangeTest
+actTest first
 assertEquals "" "" "" "" first 
 
 
-startTest first second
+arrangeTest
+actTest first second
 assertEquals "" "" "" "" first second
 
 
-startTest -- -f --verbose 
+arrangeTest
+actTest -- -f --verbose 
 assertEquals "" "" "" "" -f --verbose
 
 # Mixed 
 
 
-startTest -fv -c config.conf --output=output.txt first second
+arrangeTest
+actTest -fv -c config.conf --output=output.txt first second
 assertEquals "config.conf" "output.txt" "true" "true" first second
 
 
-startTest -fvc config.conf first second
+arrangeTest "Named parameter concatenated with switches"
+actTest -fvc config.conf first second
 assertEquals "config.conf" "" "true" "true" first second
 
 
-startTest -fc config.conf first second
+arrangeTest
+actTest -fc config.conf first second
 assertEquals "config.conf" "" "true" "" first second
 
 
-startTest first second -vfc config.conf -o=output.txt third
+arrangeTest "Positional parameters mixed with named parameters"
+actTest first second -vfc config.conf -o=output.txt third
 assertEquals "config.conf" "output.txt" "true" "true" first second third
 
+}
+
+function reportResults()
+{
+    echo 
+    echo "------------------------"
+    echo 
+
+    if [ "$testCount" == "$testPassed" ]; then
+        echo -e "\e[32mAll $testCount tests passed."
+    else
+        echo -e "\e[31mSome tests failed." 
+        echo -e "\t \e[32mPassed: $testPassed"
+        echo -e "\t \e[31mFailed: $testFailed"
+
+    fi
+    
+}
 
 
+runTests 
 
 reportResults
 
