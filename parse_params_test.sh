@@ -133,7 +133,15 @@ function reportResults()
     echo 
     echo "------------------------"
     echo 
-    echo "Number of tests: $testCount, Passed: $testPassed , Failed: $testFailed"
+
+    if [ "$testCount" == "$testPassed"]; then
+        echo "\e[32mAll $testCount tests passed."
+    else
+        echo "\e[31mSome tests failed" 
+        echo -e "\t Passed: $testPassed , Failed: $testFailed"
+
+    fi
+    
 }
 
 
