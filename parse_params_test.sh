@@ -20,8 +20,11 @@ function startTest()
  verbose=""
 
  error=""
- 
- 
+ configMsg=""
+ outputMsg=""
+ forceMsg=""
+ verboseMsg=""
+
 
  ((testCount++)) 
  inputCommand="parseParams $@"
@@ -125,7 +128,13 @@ function assertEquals()
     
 }
 
-
+function reportResults()
+{
+    echo 
+    echo "------------------------"
+    echo 
+    echo "Number of tests: $testCount, Passed: $testPassed , Failed: $testFailed"
+}
 
 
 # Named parameters tests
@@ -219,10 +228,9 @@ startTest first second -vfc config.conf -o=output.txt third
 assertEquals "config.conf" "output.txt" "true" "true" first second third
 
 
-echo 
-echo "------------------------"
-echo 
-echo "Number of tests: $testCount, Passed: $testPassed , Failed: $testFailed"
+
+
+reportResults
 
 
 
