@@ -2,9 +2,8 @@
 
 . parse_params_sample.sh
 
-function newTest()
+function startTest()
 {
- msg=$1
  
  #clear values
  config_file=""
@@ -12,17 +11,25 @@ function newTest()
  force=""
  verbose=""
  
+ inputCommand="parseParams $@"
+  
+
+ parseParams "$@"
+
+ 
 }
 
 function assertEquals()
 {
-    echo "$msg"
-	echo "parseParams $@"
+   
     expected=$1
     actual=$config_file;
     
     if [ "$expected" != "$actual" ]; then
-        echo "Error! Config file :  EXPECTED=$expected ACTUAL=$actual"
+	error=true
+        configMsg="Error! Config file :  EXPECTED= $expected ACTUAL= $actual"
+    else
+        configMsg="Config file : $actual"
     fi
     
     shift
@@ -31,7 +38,10 @@ function assertEquals()
     actual=$output_file;
     
     if [ "$expected" != "$actual" ]; then
-        echo "Error! Outpuf file :  EXPECTED=$expected ACTUAL=$actual"
+	error=true
+        outputMsg="Error! Outpuf file :  EXPECTED= $expected ACTUAL= $actual"
+    else 
+	outputMsg="Output file : $actual"
     fi
     
     shift
@@ -40,7 +50,10 @@ function assertEquals()
     actual=$force;
     
     if [ "$expected" != "$actual" ]; then
-        echo "Error! Force switch :  EXPECTED=$expected ACTUAL=$actual"
+	error=true
+        forceMsg="Error! Force switch :  EXPECTED= $expected ACTUAL= $actual"
+    else
+	forceMsg="Force switch : $actual"
     fi
     
     shift
@@ -49,7 +62,11 @@ function assertEquals()
     actual=$verbose;
     
     if [ "$expected" != "$actual" ]; then
-        echo "Error! Verbose switch :  EXPECTED=$expected ACTUAL=$actual"
+	error=true
+        verboseMsg="Error! Verbose switch :  EXPECTED= $expected ACTUAL= $actual"
+    
+    else
+	verboseMsg="Verbose switch : $actual"	
     fi
     
     shift
@@ -66,101 +83,119 @@ function assertEquals()
     actual=${positional[@]};
     
     if [ "$expected" != "$actual" ]; then
-        echo "Error! Positional parameters :  EXPECTED=$expected ACTUAL=$actual"
+	error=true
+        positionalMsg="Error! Positional parameters :  EXPECTED= $expected ACTUAL= $actual"
+    
+    else
+	positionalMsg="Positional parameters: $actual"	
     fi
     
     
+
+    if [ -z "$error" ]; then
+        echo "PASSED: $inputCommand"
+	
+
+
+
+    else
+        echo "FAILED: $inputCommand"
+    	echo -e "\t $configMsg"
+	echo -e "\t $outputMsg"
+	echo -e "\t $forceMsg"
+	echo -e "\t $verboseMsg"
+	echo -e "\t $positionalMsg"
+    fi		 
+
     
 }
 
 # Named parameters tests
 
-newTest "One named param short version"
-parseParams -c config.conf
+
+startTest -c config.conf
 assertEquals config.conf "" "" ""
 
-newTest "One named param long version"
-parseParams --config config.conf
+
+startTest --config config.conf
 assertEquals config.conf
 
-newTest "One named param short version with = "
-parseParams -c=config.conf
+
+startTest -c=config.conf
 assertEquals config.conf "" "" ""
 
-newTest "One named param long version with ="
-parseParams --config=config.conf
+
+startTest --config=config.conf
 assertEquals config.conf
 
-newTest "Two named params"
-parseParams -c config.conf --output=output.txt
+
+startTest -c config.conf --output=output.txt
 assertEquals config.conf output.txt
 
 
 
 # Switches test
-newTest "One switch short: -f"
-parseParams -f
+
+startTest -f
 assertEquals "" "" "true" ""
 
-newTest "One switch short: -v"
-parseParams -v
+
+startTest -v
 assertEquals "" "" "" "true"
 
-newTest "One switch long: --force"
-parseParams --force
+
+startTest --force
 assertEquals "" "" "true" ""
 
-newTest "One switch long: --verbose"
-parseParams --verbose
+
+startTest --verbose
 assertEquals "" "" "" "true"
 
-newTest "Two switches short: -f -v"
-parseParams -f -v
+
+startTest -f -v
 assertEquals "" "" "true" "true"
 
 
-newTest "Two switches long: --force --verbose"
-parseParams --force --verbose
-assertEquals "" "" "true" "true"
 
-newTest "Two switches concat: -fv"
-parseParams --force --verbose
+startTest --force --verbose
 assertEquals "" "" "true" "true"
 
 
-newTest "Two switches reverse concat: -vf"
-parseParams -vf
+startTest --force --verbose
+assertEquals "" "" "true" "true"
+
+
+startTest -vf
 assertEquals "" "" "true" "true"
 
 # Positional params 
 
-newTest "One positinal param"
-parseParams first
+
+startTest first
 assertEquals "" "" "" "" first 
 
-newTest "Two positinal param"
-parseParams first second
+
+startTest first second
 assertEquals "" "" "" "" first second
 
-newTest "Tricky positional params : -- -f --verbose"
-parseParams -- -f --verbose 
+
+startTest -- -f --verbose 
 assertEquals "" "" "" "" -f --verbose
 
 # Mixed 
 
-newTest "Standard case full"
-parseParams -fv -c config.conf --output=output.txt first second
+
+startTest -fv -c config.conf --output=output.txt first second
 assertEquals "config.conf" "output.txt" "true" "true" first second
 
-newTest "All params max concat"
-parseParams -fvc config.conf first second
+
+startTest -fvc config.conf first second
 assertEquals "config.conf" "" "true" "true" first second
 
 
-newTest "Switch + named concat"
-parseParams -fc config.conf first second
+startTest -fc config.conf first second
 assertEquals "config.conf" "" "true" "" first second
 
-newTest "Positional parameters first"
-parseParams first second -vfc config.conf -o=output.txt third
+
+startTest first second -vfc config.conf -o=output.txt third
 assertEquals "config.conf" "output.txt" "true" "true" first second third
