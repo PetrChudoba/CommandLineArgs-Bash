@@ -18,6 +18,8 @@ function startTest()
  output_file=""
  force=""
  verbose=""
+
+ 
  
 
  ((testCount++)) 
@@ -104,14 +106,14 @@ function assertEquals()
 
     if [ -z "$error" ]; then
 	((testPassed++)) 
-        echo "PASSED: $inputCommand"
+        echo -e "\e[32mPASSED:\e[39m $inputCommand"
 	
 
 
 
     else
 	((testFailed++)) 
-        echo "FAILED: $inputCommand"
+        echo -e "\e[31mFAILED:\e[39m $inputCommand"
     	echo -e "\t $configMsg"
 	echo -e "\t $outputMsg"
 	echo -e "\t $forceMsg"
@@ -128,7 +130,7 @@ function assertEquals()
 # Named parameters tests
 
 
-startTest -c config.conf
+startTest -c config.confd
 assertEquals config.conf "" "" ""
 
 
