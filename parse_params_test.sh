@@ -117,7 +117,13 @@ function assertEquals()
         return 0
     else
 	    ((testFailed++)) 
+
         echo -e "\e[31mFAILED:\e[39m $testCase"
+
+        if [ -n "$testDescription" ]; then
+            echo -e "\e[33mDescription: $testDescription \e[39m"
+        fi
+
     	echo -e "\t $configMsg"
 	    echo -e "\t $outputMsg"
 	    echo -e "\t $forceMsg"
@@ -136,11 +142,11 @@ function runTests()
 # Named parameters tests
 
 arrangeTest "Simple test with one named parameter in short form"
-actTest -c config.conf
+actTest -c config.confd
 assertEquals config.conf "" "" ""
 
 arrangeTest
-actTest --config config.conf
+actTest --config config.confd
 assertEquals config.conf
 
 
