@@ -142,11 +142,11 @@ function runTests()
 # Named parameters tests
 
 arrangeTest "Simple test with one named parameter in short form"
-actTest -c config.confd
+actTest -c config.conf
 assertEquals config.conf "" "" ""
 
 arrangeTest
-actTest --config config.confd
+actTest --config config.conf
 assertEquals config.conf
 
 
