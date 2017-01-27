@@ -112,20 +112,18 @@ function assertEquals()
     
 
     if [ -z "$error" ]; then
-	((testPassed++)) 
+	    ((testPassed++)) 
         echo -e "\e[32mPASSED:\e[39m $testCase"
-	
-
-
-
+        return 0
     else
-	((testFailed++)) 
+	    ((testFailed++)) 
         echo -e "\e[31mFAILED:\e[39m $testCase"
     	echo -e "\t $configMsg"
-	echo -e "\t $outputMsg"
-	echo -e "\t $forceMsg"
-	echo -e "\t $verboseMsg"
-	echo -e "\t $positionalMsg"
+	    echo -e "\t $outputMsg"
+	    echo -e "\t $forceMsg"
+	    echo -e "\t $verboseMsg"
+	    echo -e "\t $positionalMsg"
+        return 1
     fi		 
 
     
@@ -252,11 +250,12 @@ function reportResults()
 
     if [ "$testCount" == "$testPassed" ]; then
         echo -e "\e[32mAll $testCount tests passed."
+        return 0
     else
         echo -e "\e[31mSome tests failed." 
         echo -e "\t \e[32mPassed: $testPassed"
         echo -e "\t \e[31mFailed: $testFailed"
-
+        return 1
     fi
     
 }
@@ -266,5 +265,6 @@ runTests
 
 reportResults
 
+exit $?
 
 
